@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Management</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+
+        #formContainer {
+            text-align: center;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        #taskForm {
+            margin-bottom: 20px;
+        }
+
+        /* Task Containers */
+        .taskContainer {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #f4f4f4;
+            border-radius: 4px;
+            cursor: grab;
+        }
+
+        /* Task Sections */
+        #incompleteTasks, #inProgressTasks, #completedTasks {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            min-height: 100px; /* Set a minimum height for the sections */
+        }
+
+        /* Additional div boxes */
+        .additionalBox {
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            background-color: #f4f4f4;
+            border-radius: 4px;
+            height: 150px;
+        }
+    </style>
+   
+</head>
+<body>
+
+    <div id="formContainer">
+        <form id="taskForm">
+            <label for="taskInput">Task Input:</label>
+            <input type="text" id="taskInput" name="taskInput" required>
+
+            <label for="taskTextarea">Task Textarea:</label>
+            <textarea id="taskTextarea" name="taskTextarea" rows="4" required></textarea>
+
+            <label>Status:</label>
+            <label><input type="radio" name="taskStatus" value="incomplete" checked> Incomplete</label>
+            <label><input type="radio" name="taskStatus" value="inProgress"> In Progress</label>
+            <label><input type="radio" name="taskStatus" value="completed"> Completed</label>
+
+            <button type="submit">Submit</button>
+        </form>
+
+        <div id="incompleteTasks" style="background-color: aquamarine;">
+            <h2>Incomplete Tasks</h2>
+        </div>
+
+        <div id="inProgressTasks">
+            <h2>In Progress Tasks</h2>
+        </div>
+
+        <div id="completedTasks">
+            <h2>Done</h2>
+        </div>
+    </div>
+
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        $(document).ready(function() {
+            var taskCounter = 1;
+
+            $("#taskForm").submit(function(event) {
+                event.preventDefault();
+
+                var taskInputValue = $("#taskInput").val();
+                var taskTextareaValue = $("#taskTextarea").val();
+
+                var newTaskContainer = $("<div>").addClass("taskContainer").attr("id", "task" + taskCounter);
+
+                newTaskContainer.html("<h3>Task " + taskCounter + ":</h3><p><strong>Input:</strong> " + taskInputValue + "</p><p><strong>Textarea:</strong> " + taskTextareaValue + "</p>");
+
+                // Determine the status of the task and append it to the corresponding section
+                var status = $("input[name='taskStatus']:checked").val();
+                if (status === "incomplete") {
+                    $("#incompleteTasks").append(newTaskContainer);
+                } else if (status === "inProgress") {
+                    $("#inProgressTasks").append(newTaskContainer);
+                } else if (status === "completed") {
+                    $("#completedTasks").append(newTaskContainer);
+                }
+
+                // Make the new task container draggable with smooth animation
+                newTaskContainer.draggable({
+                    cursor: "move",
+                    revert: "invalid",
+                    snap: true,
+                    snapMode: "outer",
+                    snapTolerance: 10,
+                    zIndex: 1000,
+                    drag: function (event, ui) {
+                        ui.helper.stop(true, true);
+                    }
+                });
+
+                // Make task sections droppable
+                $("#incompleteTasks, #inProgressTasks, #completedTasks").droppable({
+                    accept: ".taskContainer",
+                    drop: function (event, ui) {
+                        $(this).append(ui.helper);
+                        ui.helper.animate({
+                            top: 0,
+                            left: 0
+                        }, 500); // Adjust the duration of the animation
+                    }
+                });
+
+                $("#taskInput, #taskTextarea").val("");
+
+                taskCounter++;
+            });
+        });
+    </script>
+</body>
+</html>

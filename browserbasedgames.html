@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guess the Number Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        #game-container {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        #message {
+            font-size: 18px;
+            margin-top: 20px;
+        }
+
+        #input-container {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+    <h1>Guess the Number Game</h1>
+    <p id="message">Guess a number between 1 and 10</p>
+    <div id="input-container">
+        <input type="number" id="userGuess" placeholder="Enter your guess">
+        <button onclick="checkGuess()">Submit Guess</button>
+    </div>
+</div>
+
+<script>
+    // Generate a random number between 1 and 100
+    const secretNumber = Math.floor(Math.random() * 10) + 1;
+
+    // Counter for the number of attempts
+    let attempts = 0;
+
+    function checkGuess() {
+        const userGuessElement = document.getElementById('userGuess');
+        const userGuess = parseInt(userGuessElement.value);
+
+        if (isNaN(userGuess) || userGuess < 1 || userGuess > 10) {
+            alert('Please enter a valid number between 1 and 10.');
+            return;
+        }
+
+        attempts++;
+
+        const messageElement = document.getElementById('message');
+
+        if (userGuess === secretNumber) {
+            messageElement.innerHTML = `Congratulations! You guessed the number ${secretNumber} in ${attempts} attempts.`;
+            messageElement.style.color = 'green';
+            document.getElementById('input-container').style.display = 'none';
+        } else {
+            const hint = userGuess < secretNumber ? 'Too low, try again!' : 'Too high, try again!';
+            messageElement.innerHTML = `${hint} Attempts: ${attempts}`;
+            messageElement.style.color = 'red';
+        }
+
+        userGuessElement.value = '';
+    }
+</script>
+
+</body>
+</html>

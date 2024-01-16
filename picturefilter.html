@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .dropArea {
+            border: 2px dashed #ccc;
+            padding: 20px;
+            margin-top: 20px;
+            margin-right: 20px;
+            display: inline-block;
+        }
+
+        .filteredImage {
+            max-width: 300px;
+            max-height: 300px;
+        }
+
+        .grayscaleFilter {
+            filter: grayscale(100%);
+        }
+
+        .sepiaFilter {
+            filter: sepia(100%);
+        }
+
+        .invertFilter {
+            filter: invert(100%);
+        }
+
+        .blurFilter {
+            filter: blur(5px);
+        }
+        .filteredImage {
+        max-width: 100%;
+        max-height: 200px;
+    }
+
+    .autumnFilter {
+        filter: sepia(0.5) saturate(2) hue-rotate(-30deg);
+    }
+    </style>
+</head>
+<body>
+    
+    <p>Select a file</p>
+    <input type="file" id="fileInput" onchange="displayImage()">
+    <br>
+    <img id="selectedImage" src="#" alt="Selected Image" style="display:none; max-width:300px; max-height:300px;">
+
+    <div id="grayscaleDropArea" class="dropArea" ondrop="drop(event, 'grayscaleFilter')" ondragover="allowDrop(event)">
+        Drop here to add the image with grayscale filter
+    </div>
+
+    <div id="sepiaDropArea" class="dropArea" ondrop="drop(event, 'sepiaFilter')" ondragover="allowDrop(event)">
+        Drop here to add the image with sepia filter
+    </div>
+
+    <div id="invertDropArea" class="dropArea" ondrop="drop(event, 'invertFilter')" ondragover="allowDrop(event)">
+        Drop here to add the image with invert filter
+    </div>
+
+    <div id="blurDropArea" class="dropArea" ondrop="drop(event, 'blurFilter')" ondragover="allowDrop(event)">
+        Drop here to add the image with blur filter
+    </div>
+   
+    <div id="autumnArea" class="dropArea" ondrop="drop(event, 'autumnFilter')" ondragover="allowDrop(event)">
+        Drop here to add the image with HD filter
+    </div>
+
+    <script>
+        function displayImage() {
+            var input = document.getElementById('fileInput');
+            var image = document.getElementById('selectedImage');
+    
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+    
+                reader.onload = function (e) {
+                    image.src = e.target.result;
+                    image.style.display = 'block';
+                };
+    
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    
+        function allowDrop(event) {
+            event.preventDefault();
+        }
+    
+        function drop(event, filterClass) {
+            event.preventDefault();
+            var image = document.getElementById('selectedImage');
+            var dropArea = event.target;
+    
+            // Clone the image and apply the filter class
+            var clonedImage = image.cloneNode(true);
+            clonedImage.style.display = 'block';
+    
+            // Add the specified filter class
+            clonedImage.classList.add('filteredImage', filterClass);
+    
+            dropArea.appendChild(clonedImage);
+        }
+    
+        function applyAutumnTone() {
+            // Call the drop function with the "autumn" filter class
+            drop(event, 'autumnFilter');
+        }
+    </script>
+    
+    
+</body>
+</html>
